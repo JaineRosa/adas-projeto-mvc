@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.postgresql.core.ConnectionFactory;
 
 import br.com.projetoMvc.model.Produto;
@@ -65,28 +67,28 @@ public class ProdutoDAOImpl implements GenericDAO {
 	@Override
 
 	public Boolean cadastrar(Object object) {
-			 Produto produto = (Produto) object;
-			 PreparedStatement stmt = null;
-			 String sql = "INSERT INTO produto (descricao) VALUES(?)";
-			 try {
-				stmt = conn.prepareStatement(sql);
-				stmt.setString(1, produto.getDescricao());//preparando a SQL para receber o valor e exdecutar no banco.Metodo utilizado para colocar no lugar do ?;
-				stmt.execute();
-				return true;
-			} catch (SQLException ex) {
-				System.out.println("Problemas na DAO ao cadastrar Produto! Erro: " + ex.getMessage());
+		Produto produto = (Produto) object;
+		PreparedStatement stmt = null;
+		String sql = "INSERT INTO produto (descricao) VALUES(?)";
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, produto.getDescricao());// preparando a SQL para receber o valor e exdecutar no
+														// banco.Metodo utilizado para colocar no lugar do ?;
+			stmt.execute();
+			return true;
+		} catch (SQLException ex) {
+			System.out.println("Problemas na DAO ao cadastrar Produto! Erro: " + ex.getMessage());
+			ex.printStackTrace();
+			return false;
+		} finally {
+			try {
+				ConnenctionFactory.closeConnetion(conn, stmt);
+			} catch (Exception ex) {
+				System.out.println("Problemas ao fechar a conexão! Erro: " + ex.getMessage());
 				ex.printStackTrace();
-				return false;
-			}finally {
-				try {
-					ConnenctionFactory.closeConnetion(conn, stmt);
-				} catch (Exception ex) {
-					System.out.println("Problemas ao fechar a conexão! Erro: " + ex.getMessage());
-					ex.printStackTrace();
-				}
 			}
-		 
-		
+		}
+
 	}
 
 	@Override
@@ -97,7 +99,24 @@ public class ProdutoDAOImpl implements GenericDAO {
 
 	@Override
 	public void excluir(int id) {
-		// TODO Auto-generated method stub
+		PreparedStatement stmt = null;
+		String sql = "DELETE FROM produto WHERE id = ?";
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);// preparando a SQL para receber o valor e exdecutar no banco.Metodo utilizado
+								// para colocar no lugar do ?;
+			stmt.execute();
+		} catch (SQLException ex) {
+			System.out.println("Problemas na DAO ao cadastrar Produto! Erro: " + ex.getMessage());
+			ex.printStackTrace();
+		} finally {
+			try {
+				ConnenctionFactory.closeConnetion(conn, stmt);
+			} catch (Exception ex) {
+				System.out.println("Problemas ao fechar a conexão! Erro: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+		}
 
 	}
 

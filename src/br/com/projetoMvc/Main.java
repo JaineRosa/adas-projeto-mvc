@@ -14,27 +14,73 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		ProdutoController controller = new ProdutoController();
+		int opcao = 0;
 
-		Produto novoProduto = new Produto(); //metodo utilizado para cadastrar u novo produto.
-		novoProduto.setDescricao(JOptionPane.showInputDialog("Descrição do Produto "));
-		controller.cadastrar(novoProduto);
+		do {
 
-		Scanner scan = new Scanner(System.in);
+			String menu = "Menu do sistema"
+					.concat("\n [1] Listar todos")
+					.concat("\n [2] Listar por ID")
+					.concat("\n [3] Cadastrar")
+					.concat("\n [4] Alterar")
+					.concat("\n [5] Excluir")
+					.concat("\n [0] Sair")
+					.concat("\n\n Escolha uma opção!");
 
-		List<Produto> lista = new ArrayList<Produto>();
+			opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
 
-		lista = controller.listarTodos();
+			switch (opcao) {
 
-		String mensagemLista = "".concat("-Lista de Produtos-").concat("\n Cód.  Descrição");
+			case 0: {
+				JOptionPane.showMessageDialog(null, "Saindo do Menu...!");
+				break;
+			}
 
-		for (Produto produto : lista) {
-			mensagemLista = mensagemLista.concat("\n    ").concat(String.valueOf(produto.getId())).concat("      ")
-					.concat(produto.getDescricao());
-		}
+			case 1: {
+				JOptionPane.showMessageDialog(null, "Listar Todos!");
+				ProdutoController controller = new ProdutoController();
+				List<Produto> lista = new ArrayList<Produto>();
 
-		JOptionPane.showMessageDialog(null, mensagemLista);
+				lista = controller.listarTodos();
 
+				String mensagemLista = "".concat("-Lista de Produtos-").concat("\n Cód.  Descrição");
+
+				for (Produto produto : lista) {
+					mensagemLista = mensagemLista.concat("\n    ").concat(String.valueOf(produto.getId()))
+							.concat("      ").concat(produto.getDescricao());
+				}
+
+				JOptionPane.showMessageDialog(null, mensagemLista);
+				break;
+			}
+
+			case 2: {
+				JOptionPane.showMessageDialog(null, "Listar por ID!");
+				
+				break;
+			}
+			case 3: {
+				JOptionPane.showMessageDialog(null, "Cadastrar!");
+				ProdutoController controller = new ProdutoController();
+
+				Produto novoProduto = new Produto(); // metodo utilizado para cadastrar u novo produto.
+				novoProduto.setDescricao(JOptionPane.showInputDialog("Descrição do Produto "));
+				controller.cadastrar(novoProduto);
+
+				break;
+			}
+			case 4: {
+				JOptionPane.showMessageDialog(null, "Alterar!");
+				break;
+			}
+			case 5: {
+				JOptionPane.showMessageDialog(null, "Excluir!");
+				break;
+			}
+
+			default:
+				JOptionPane.showMessageDialog(null, "opção inválida!");
+			}
+		} while (opcao >= 1 && opcao <= 5);
 	}
-
 }
