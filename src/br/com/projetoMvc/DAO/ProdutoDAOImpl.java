@@ -60,9 +60,38 @@ public class ProdutoDAOImpl implements GenericDAO {
 
 	@Override
 	public Object listarPorId(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+		Produto produto = null;
+			PreparedStatement stmt = null; // classe responsavel por ir no banco e executar a sql
+			ResultSet rs = null;
+			String sql = "SELECT * FROM produto WHERE id = ? ";
+
+			try {
+				stmt = conn.prepareStatement(sql);//converte o string em um sql valido
+				stmt.setInt(1, id);// prepareStatement prepara o conteudo para ser executado no banco;
+				rs = stmt.executeQuery();// executa o comando dentro so banco de dados.
+				
+				if (rs.next()) { // resultset armazena o valor do banco dentro desta variavel e retorna.
+					produto = new Produto();
+					produto.setId(rs.getInt("id"));// pegando o valor do banco e jogando dentro da variavel id.
+					produto.setDescricao(rs.getString("descricao"));
+					
+				}
+			} catch (SQLException ex) {
+				System.out.println("Problemas na DAO ao listar Produto! Erro: " + ex.getMessage());
+				ex.printStackTrace();
+			} finally { // utilizando para fechar a conexao com o banco. sempre que abro a conexao devo
+						// fechar em seguida.
+				try {
+					ConnenctionFactory.closeConnetion(conn, stmt, rs);
+				} catch (Exception ex) {
+					System.out.println("Problemas ao fechar a conexão! Erro: " + ex.getMessage());
+				}
+			}
+
+			return produto;
+		}
+	
 
 	@Override
 
@@ -93,8 +122,29 @@ public class ProdutoDAOImpl implements GenericDAO {
 
 	@Override
 	public Boolean alterar(Object object) {
-		// TODO Auto-generated method stub
-		return null;
+		Produto produto = (Produto) object;
+		PreparedStatement stmt = null;
+		String sql = "UPDATE produto SET descricao = ? WHERE id = ?";
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, produto.getDescricao());
+			stmt.setInt(2, produto.getId());// preparando a SQL para receber o valor e executar no
+													// banco.Metodo utilizado para colocar no lugar do ?;
+			stmt.execute();
+			return true;
+		} catch (SQLException ex) {
+			System.out.println("Problemas na DAO ao alterar Produto! Erro: " + ex.getMessage());
+			ex.printStackTrace();
+			return false;
+		} finally {
+			try {
+				ConnenctionFactory.closeConnetion(conn, stmt);
+			} catch (Exception ex) {
+				System.out.println("Problemas ao fechar a conexão! Erro: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+		}
+
 	}
 
 	@Override
@@ -105,7 +155,7 @@ public class ProdutoDAOImpl implements GenericDAO {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, id);// preparando a SQL para receber o valor e exdecutar no banco.Metodo utilizado
 								// para colocar no lugar do ?;
-			stmt.execute();
+			stmt.executeUpdate();
 		} catch (SQLException ex) {
 			System.out.println("Problemas na DAO ao cadastrar Produto! Erro: " + ex.getMessage());
 			ex.printStackTrace();
@@ -119,5 +169,7 @@ public class ProdutoDAOImpl implements GenericDAO {
 		}
 
 	}
+	
+	
 
 }
